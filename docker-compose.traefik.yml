@@ -67,13 +67,14 @@ services:
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
       - GF_USERS_ALLOW_SIGN_UP=false
-      #- GF_SERVER_ROOT_URL=${GF_SERVER_ROOT_URL:-localhost}
-      #- GF_SMTP_ENABLED=${GF_SMTP_ENABLED:-false}
-      #- GF_SMTP_FROM_ADDRESS=${GF_SMTP_FROM_ADDRESS:-grafana@test.com}
-      #- GF_SMTP_FROM_NAME=${GF_SMTP_FROM_NAME:-Grafana}
-      #- GF_SMTP_HOST=${GF_SMTP_HOST:-smtp:25}
+      - GF_SERVER_ROOT_URL=${GF_SERVER_ROOT_URL:-https://grafana.fni-stl.com}
+      - GF_SMTP_ENABLED=${GF_SMTP_ENABLED:-true}
+      - GF_SMTP_FROM_ADDRESS=${GF_SMTP_FROM_ADDRESS:-grafana@fni-stl.com}
+      - GF_SMTP_FROM_NAME=${GF_SMTP_FROM_NAME:-Grafana}
+      - GF_SMTP_HOST=${GF_SMTP_HOST:-fnetexchange.fni-stl.com:25}
       #- GF_SMTP_USER=${GF_SMTP_USER}
       #- GF_SMTP_PASSWORD=${GF_SMTP_PASSWORD}
+      - GF_SMTP_SKIP_VERIFY=true
     volumes:
       - grafana:/var/lib/grafana
     deploy:
@@ -136,7 +137,7 @@ services:
         - traefik.redirectorservice.frontend.redirect.entryPoint=https
         # Traefik service that listens to HTTPS
         - traefik.webservice.frontend.entryPoints=https
-        - traefik.frontend.auth.basic.users=${ADMIN_USER}:${HASHED_PASSWORD}
+        - traefik.frontend.auth.basic.users=${ADMIN_USER}:${HASHED_ADMIN_PASSWORD}
 
   unsee:
     image: cloudflare/unsee:v0.8.0
@@ -160,7 +161,7 @@ services:
         - traefik.redirectorservice.frontend.redirect.entryPoint=https
         # Traefik service that listens to HTTPS
         - traefik.webservice.frontend.entryPoints=https
-        - traefik.frontend.auth.basic.users=${ADMIN_USER}:${HASHED_PASSWORD}
+        - traefik.frontend.auth.basic.users=${ADMIN_USER}:${HASHED_ADMIN_PASSWORD}
 
   node-exporter:
     image: stefanprodan/swarmprom-node-exporter:v0.16.0
@@ -226,4 +227,4 @@ services:
         - traefik.redirectorservice.frontend.redirect.entryPoint=https
         # Traefik service that listens to HTTPS
         - traefik.webservice.frontend.entryPoints=https
-        - traefik.frontend.auth.basic.users=${ADMIN_USER}:${HASHED_PASSWORD}
+        - traefik.frontend.auth.basic.users=${ADMIN_USER}:${HASHED_ADMIN_PASSWORD}
